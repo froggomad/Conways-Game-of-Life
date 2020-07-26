@@ -1,0 +1,6 @@
+Conway's Game of Life meets the criteria of always being in one state which is an
+element in a set of predefined, finite states. The head is also always in a single
+location since we're in a run loop that only ends on the condition that we want
+it to end (as it would be with turning off a machine)
+
+https://en.citizendium.org/wiki/Turing_Machine
