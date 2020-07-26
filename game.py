@@ -6,7 +6,7 @@ from automata import Line_Three
 pygame.init()
 
 WINDOW_HEIGHT = 1000
-WINDOW_WIDTH = 800
+WINDOW_WIDTH = 1650
 SCREEN = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 CLOCK = pygame.time.Clock()
 FPS = 5
@@ -23,7 +23,8 @@ while True:
     dt = CLOCK.tick(FPS)
     SCREEN.fill(WHITE)
     board.draw_grid()
-    line.draw(SCREEN, x, cell_size.width)
+    board.draw_status_bar()
+    line.draw(SCREEN, x, cell_size.width, cell_size.height, 1)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()

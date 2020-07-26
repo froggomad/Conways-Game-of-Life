@@ -33,6 +33,7 @@ class Board:
     
     def draw_grid(self):
         """Create the grid using the current size and generation"""
+        self.increase_generation()
         # TODO: Improve performance (do we need a nested for loop?)
         # TODO: Draw generation label
         from game import SCREEN
@@ -43,9 +44,10 @@ class Board:
             for y in range(self._num_cells):
                 rect = pygame.Rect(x*self.cell_size().width, y*self.cell_size().height,
                                 self.cell_size().width, self.cell_size().height)
-                #print(x*self.cell_size().width)
-                print(y*self.cell_size().height)
                 pygame.draw.rect(SCREEN, BLACK, rect, 1)
 
     def draw_status_bar(self):
         """draw the generation in the lower right corner"""
+        pygame.display.set_caption(f"Generation: {self._generation}")
+        #TODO: Move to lower right corner, just under grid
+        #TODO: Create options allowing user to change window size, number of cells, etc
