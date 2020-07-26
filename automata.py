@@ -45,6 +45,6 @@ class Line_Three(Automata):
         else:
             radius = width//2
 
-        pygame.draw.circle(surface, self._color, (x, int( center_y)), radius, 2)
-        pygame.draw.circle(surface, self._color, (x, int( height + center_y)), radius, 2)
-        pygame.draw.circle(surface, self._color, (x, int( (height*2) + center_y)), radius, 2)
+        pygame.draw.circle(surface, self._color, (x, int(row*height + center_y)), radius, 2)
+        pygame.draw.circle(surface, self._color, (x, int( (row+1*height) + center_y)), radius, 2)
+        pygame.draw.circle(surface, self._color, (x, int( (row+2*height) + center_y)), radius, 2)

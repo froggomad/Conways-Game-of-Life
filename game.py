@@ -24,7 +24,7 @@ while True:
     SCREEN.fill(WHITE)
     board.draw_grid()
     board.draw_status_bar()
-    line.draw(SCREEN, x, cell_size.width, cell_size.height, 1)
+    line.draw(SCREEN, x, cell_size.width, cell_size.height, 0)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
