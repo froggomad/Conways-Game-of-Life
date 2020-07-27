@@ -1,6 +1,7 @@
 import pygame
 import messages
 from messages import Position
+from automata import GridCell
 
 class Size:
     def __init__(self, width, height):
@@ -48,11 +49,10 @@ class Board:
         # fill array with cells        
         for x in range(self._num_cells):            
             for y in range(self._num_cells):
-                rect = pygame.Rect(x*self.cell_size().width, y*self.cell_size().height,
-                                self.cell_size().width, self.cell_size().height)
-
+                rect = GridCell(x,y, self.cell_size().width, self.cell_size().height)
+                rect = GridCell(x,y, self.cell_size().width, self.cell_size().height)
                 self.grids[0][(self._num_cells*x)+y] = rect
-                self.grids[1][(self._num_cells*x)+y] = rect
+                self.grids[1][(self._num_cells*x)+y] = rect        
     
     def draw_grid(self, num):
         """Create the grid using the current size and generation"""        
@@ -64,8 +64,9 @@ class Board:
         self._is_user_interaction_enabled = False
         #makes grids of cell_size() (pixels) such that it fits the window size
         for grid in self.grids[num]:
-            pygame.draw.rect(SCREEN, BLACK, grid, 1)
+            grid.draw()
         self.draw_status_bar(SCREEN)
+        self.grids[0][0]._draw_circle(SCREEN)
 
     def draw_status_bar(self, screen):
         """draw the current generation in the lower right corner"""

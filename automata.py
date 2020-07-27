@@ -30,19 +30,41 @@ class Automata:
     # TODO: Move to cell class
     def change_color(self, color):
         # TODO: Change XYZ to something more appropriate
-        """Use an XYZ value"""
+        """Use an RGB value"""
         self._color = color
     # TODO: rename draw cell
-    def _draw_circle(self, surface, x, width, height, row):
-        center_y = height//2
-        if width > height:
-            radius = height//2
+    
+
+class GridCell(Automata):
+    def __init__(self, x,  y, width, height):        
+        super().__init__()        
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.surface = pygame.Surface((width, height))
+        #self.draw()
+        
+    def _draw_circle(self, surface):
+        center_y = self.height//2
+        if self.width > self.height:
+            radius = self.height//2
         else:
-            radius = width//2
-        return pygame.draw.circle(surface, self._color, (x, int(row*height + center_y)), radius)
+            radius = self.width//2
+            #self.x, int(row*height + center_y)
+            
+        return pygame.draw.circle(surface, self._color, (self.width//2, center_y), radius)
+
+    # def draw(self, x, y, width, height):
+    def draw(self):        
+        from game import SCREEN, BLACK
+        rect = pygame.Rect(self.x*self.width, self.y*self.height,
+                                self.width, self.height)
+        return pygame.draw.rect(SCREEN, BLACK, rect, 1)
+
 
 class Line_Three(Automata):
-    def __init__(self, ):
+    def __init__(self):
         super().__init__()
         self.cells = []
 
