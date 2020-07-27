@@ -18,3 +18,10 @@ TIL:
 * Blit to draw, flip() to put it into memory
 
 **Biggest challenge so far has been getting everything to scale dynamicaly**
+
+## Day 3:
+
+* drawing circles previously wasn't being done in a way that they could be drawn programatically per grid square easily
+    * drawing grid squares by bltting a surface then drawing a rect on it so circles can be drawn on top of the blitted surface
+    * fixed grid cell coordinate system
+    * fixed method to draw circle (it was always drawing at 0,0)
