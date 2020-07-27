@@ -29,7 +29,7 @@ while True:
     # TODO: use dt to control movement speed of objects?
     dt = CLOCK.tick(FPS)
     SCREEN.fill(WHITE)
-    board.draw_grid()
+    board.draw_grid(0)
     line.draw(SCREEN, x, cell_size.width, cell_size.height, 0, 3)
     #capture events (mouse clicks, closing the game, etc)
     handle_events()
