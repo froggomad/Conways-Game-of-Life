@@ -3,7 +3,6 @@ import sys
 from board import Board
 from automata import Line_Three
 import messages
-from messages import Position
 
 class Size:
     def __init__(self, width, height):
@@ -66,6 +65,7 @@ def handle_events():
         if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     mouse_pos = pygame.mouse.get_pos()
+                    board.get_cell_num_for_pos(0, Position(mouse_pos[0], mouse_pos[1]))._draw_circle()
                     
 
 while True:

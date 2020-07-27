@@ -42,25 +42,28 @@ class GridCell(Automata):
         self.y = y
         self.width = width
         self.height = height
-        self.surface = pygame.Surface((width, height))
+        self.surface = pygame.Surface((width, height), pygame.SRCALPHA)
+        #self.surface.position = (self.x, self.y)
         #self.draw()
         
-    def _draw_circle(self, surface):
+    def _draw_circle(self):
         center_y = self.height//2
         if self.width > self.height:
             radius = self.height//2
         else:
             radius = self.width//2
             #self.x, int(row*height + center_y)
-            
-        return pygame.draw.circle(surface, self._color, (self.width//2, center_y), radius)
+        return pygame.draw.circle(self.surface, self._color, (self.width//2, center_y), radius)
 
     # def draw(self, x, y, width, height):
     def draw(self):        
         from game import SCREEN, BLACK
-        rect = pygame.Rect(self.x*self.width, self.y*self.height,
-                                self.width, self.height)
-        return pygame.draw.rect(SCREEN, BLACK, rect, 1)
+        rect = pygame.Rect(0,0,
+                               self.width, self.height)
+        
+        SCREEN.blit(self.surface, (self.x, self.y))
+        return pygame.draw.rect(self.surface, BLACK, rect, 1)
+        
 
 
 class Line_Three(Automata):
