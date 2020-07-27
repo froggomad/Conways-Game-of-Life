@@ -18,7 +18,7 @@ class Board:
         self._size = Size(window_width, window_height-self.status_bar_height)
         self.__init_grids__()
 
-    def cell_num_for_pos(self, grid_num, position=Position(0,0)):
+    def get_cell_num_for_pos(self, grid_num, position=Position(0,0)):
         row = position.x//self.cell_size().width
         column = position.y//self.cell_size().height
         # TODO: change grid to be dynamic
@@ -49,8 +49,8 @@ class Board:
         # fill array with cells        
         for x in range(self._num_cells):            
             for y in range(self._num_cells):
-                rect = GridCell(x,y, self.cell_size().width, self.cell_size().height)
-                rect = GridCell(x,y, self.cell_size().width, self.cell_size().height)
+                rect = GridCell(x*self.cell_size().width, y*self.cell_size().height, self.cell_size().width, self.cell_size().height)
+                rect = GridCell(x*self.cell_size().width, y*self.cell_size().height, self.cell_size().width, self.cell_size().height)
                 self.grids[0][(self._num_cells*x)+y] = rect
                 self.grids[1][(self._num_cells*x)+y] = rect        
     
@@ -65,17 +65,30 @@ class Board:
         #makes grids of cell_size() (pixels) such that it fits the window size
         for grid in self.grids[num]:
             grid.draw()
+
         self.draw_status_bar(SCREEN)
-        self.grids[0][0]._draw_circle(SCREEN)
+        # MARK: Direct Draw
+        #self.grids[0][0]._draw_circle(self.grids[0][0].surface)
+        #self.grids[0][24]._draw_circle(self.grids[0][1].surface)
+
+        # MARK: Coordinate Draw (preferred)
+        self.get_cell_num_for_pos(0, (Position(self.size().width//2, self.size().height//2)))._draw_circle()
+        self.get_cell_num_for_pos(0, (Position(0, 0)))._draw_circle()
 
     def draw_status_bar(self, screen):
+        """draw user options (window size, num cells, etc)"""
         """draw the current generation in the lower right corner"""
         from game import WHITE
+        from messages import Button
+        
         pygame.display.set_caption(f"Conway's Game of Life")
         #TODO: Move to lower right corner, just under grid
         #rect = pygame.Rect(0, self._size.height, self._size.width, 80)
         status_bar = pygame.Surface((self._size.width, self.status_bar_height))
+        
+        
         status_bar.fill(WHITE)
         messages.message_display(f"Generation: {self._generation}", status_bar, Position(status_bar.get_rect().width, status_bar.get_rect().height))
+        test_button = Button("test", (0,0), status_bar, (255,0,0), fill_color=(255,0,0), text_color = WHITE)
         screen.blit(status_bar, (0, self._size.height))        
         #TODO: Create options allowing user to change window size, number of cells, etc

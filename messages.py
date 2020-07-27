@@ -1,5 +1,6 @@
 #message_display helper
 import pygame
+# TODO: Fix circular import so this doesn't have to be defined twice
 class Position:
     def __init__(self, x, y):
         self.x = x
@@ -31,3 +32,22 @@ def message_display(text, surface, position=Position(0,0), color=(0,0,0)):
     # draw it
     surface.blit(TextSurf, TextRect)
     return TextRect
+
+def Button(text, coords, surface, border_color=(0,0,0), text_color=(0,0,0), fill_color=None, padding=20, border=True):
+    """color will be the color of the button's border/outer rectangle"""
+    if fill_color == None:
+        fill_color = surface.fill_color
+    
+    largeText = pygame.font.Font('freesansbold.ttf',20)
+    text_objs = text_objects(text, largeText, text_color)
+    text_surface = text_objs[0]
+    text_rect = text_objs[1]
+    rect = pygame.Rect(coords, (text_rect.width + int(padding), text_rect.height))
+
+    #draw border
+    if border == True:
+        pygame.draw.rect(surface, border_color, rect, 1)
+    pygame.draw.rect(surface, fill_color, rect)
+    surface.blit(text_surface, (coords[0] + padding//2, coords[1]))
+    return (rect)
+
