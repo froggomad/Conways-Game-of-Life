@@ -1,7 +1,6 @@
 import pygame
 import sys
 from board import Board
-from automata import Blinker
 import messages
 from public_UI import *
 
@@ -11,7 +10,6 @@ pygame.init()
 board = Board(0, WINDOW_WIDTH, WINDOW_HEIGHT, 7)
 cell_size = board.cell_size()
 board_size = board.size()
-line = Blinker()
 pause = False
 def paused():
     global pause
@@ -43,20 +41,21 @@ def handle_events():
             if event.key == pygame.K_p:
                 pause = True
                 paused()
-        if event.type == pygame.MOUSEBUTTONDOWN and pause == True:
-                if event.button == 1:
-                    mouse_pos = pygame.mouse.get_pos()
-                    board.get_cell_num_for_pos(0, Position(mouse_pos[0], mouse_pos[1]))._draw_circle()
-                    
-
+        if event.type == pygame.MOUSEBUTTONDOWN and pause == True:            
+            if event.button == 1:
+                mouse_pos = pygame.mouse.get_pos()
+                board.get_cell_num_for_pos(0, Position(mouse_pos[0], mouse_pos[1]))[0]._draw_circle()
+board.grids[0][24]._draw_circle()
+board.grids[0][25]._draw_circle()
+board.grids[0][31]._draw_circle()
 while True:
+    print(f"######MAIN LOOP#######")
     # TODO: use dt to control movement speed of objects?
     dt = CLOCK.tick(FPS)
     SCREEN.fill(WHITE)
     board.draw_grid(board.active_grid)
-    
     #capture events (mouse clicks, closing the game, etc)
-    handle_events()    
+    handle_events()
     pygame.display.flip()
 
 
