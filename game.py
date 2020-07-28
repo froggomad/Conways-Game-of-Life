@@ -1,18 +1,10 @@
 import pygame
 import sys
 from board import Board
-from automata import Line_Three
+from automata import Blinker
 import messages
+from public_UI import Size, Position
 
-class Size:
-    def __init__(self, width, height):
-        self.width = width
-        self.height = height
-
-class Position:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
 
 pygame.init()
 
@@ -26,11 +18,11 @@ WHITE = (245, 245, 245)
 RED = (255, 0, 0)
 CYAN = (0,186,186)
 
-board = Board(0, WINDOW_WIDTH, WINDOW_HEIGHT, 25)
+board = Board(0, WINDOW_WIDTH, WINDOW_HEIGHT, 50)
 cell_size = board.cell_size()
 board_size = board.size()
 x = cell_size.width//2
-line = Line_Three()
+line = Blinker()
 pause = False
 def paused():
     global pause
@@ -75,7 +67,7 @@ while True:
     board.draw_grid(0)
     #capture events (mouse clicks, closing the game, etc)
     handle_events()
-
+    #animation x value wrap around
     if x >= board_size.width:
         x = cell_size.width//2
     else:

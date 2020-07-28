@@ -1,10 +1,8 @@
 #message_display helper
 import pygame
+from public_UI import Position
 # TODO: Fix circular import so this doesn't have to be defined twice
-class Position:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
+
 
 def text_objects(text, font, color):
     textSurface = font.render(text, True, color)

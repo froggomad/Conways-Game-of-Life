@@ -1,6 +1,7 @@
 import pygame
+import random
 import messages
-from messages import Position
+from public_UI import Position
 from automata import GridCell
 
 class Size:
@@ -46,16 +47,22 @@ class Board:
             [None for x in range(self._num_cells*self._num_cells)],
             [None for x in range(self._num_cells*self._num_cells)]
         ]
+        self.active_grid = 0
         # fill array with cells        
         for x in range(self._num_cells):            
             for y in range(self._num_cells):
                 rect = GridCell(x*self.cell_size().width, y*self.cell_size().height, self.cell_size().width, self.cell_size().height)
                 rect = GridCell(x*self.cell_size().width, y*self.cell_size().height, self.cell_size().width, self.cell_size().height)
                 self.grids[0][(self._num_cells*x)+y] = rect
-                self.grids[1][(self._num_cells*x)+y] = rect        
+                self.grids[1][(self._num_cells*x)+y] = rect
     
-    def draw_grid(self, num):
-        """Create the grid using the current size and generation"""        
+    def draw_grid(self, grid_num, choice=None):
+        """Create the grid using the current size and generation
+            set_grid(0, 0) grids[0] - all dead
+            set_grid(1, 1) grids[1] - all alive
+            set_grid(0) grids[0] - random
+            set_grid(1) grids[None] - random 
+        """        
         self.increase_generation()
         # TODO: Improve performance (do we need a nested for loop?)
         # TODO: Draw generation label
@@ -63,10 +70,19 @@ class Board:
         from game import BLACK
         self._is_user_interaction_enabled = False
         #makes grids of cell_size() (pixels) such that it fits the window size
-        for grid in self.grids[num]:
+        # MARK: None/Random choice
+        for grid in self.grids[grid_num]:
             grid.draw()
+            draw = random.choice([0,1])
+            if draw == 1:
+                grid._draw_circle()
+            else:
+                grid._clear_circle()
 
         self.draw_status_bar(SCREEN)
+        
+
+
         # MARK: Direct Draw
         #self.grids[0][0]._draw_circle(self.grids[0][0].surface)
         #self.grids[0][24]._draw_circle(self.grids[0][1].surface)

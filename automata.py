@@ -42,18 +42,25 @@ class GridCell(Automata):
         self.y = y
         self.width = width
         self.height = height
+        #create a clear surface to draw on
         self.surface = pygame.Surface((width, height), pygame.SRCALPHA)
-        #self.surface.position = (self.x, self.y)
-        #self.draw()
         
     def _draw_circle(self):
         center_y = self.height//2
         if self.width > self.height:
-            radius = self.height//2
+            radius = self.height//2-2
         else:
-            radius = self.width//2
-            #self.x, int(row*height + center_y)
+            radius = self.width//2-2
         return pygame.draw.circle(self.surface, self._color, (self.width//2, center_y), radius)
+
+    def _clear_circle(self):
+        center_y = self.height//2
+        if self.width > self.height:
+            radius = self.height//2-2
+        else:
+            radius = self.width//2-2
+        pygame.draw.circle(self.surface, (255,255,255), (self.width//2, center_y), radius)
+        
 
     # def draw(self, x, y, width, height):
     def draw(self):        
@@ -66,15 +73,11 @@ class GridCell(Automata):
         
 
 
-class Line_Three(Automata):
+class Blinker(Automata):
     def __init__(self):
         super().__init__()
-        self.cells = []
 
     def draw(self, surface, x, width, height, starting_row, count):        
         #surface, color, (x,y), radius, width
         for row_num in range(starting_row, count):
-            self.cells.append( self._draw_circle(surface, x, width, height, row_num) )
-
-        #pygame.draw.circle(surface, self._color, (x, int( (row+1*height) + center_y)), radius, 2)
-        # pygame.draw.circle(surface, self._color, (x, int( (row+2*height) + center_y)), radius, 2)
+            self._draw_circle(surface, x, width, height, row_num)
