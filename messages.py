@@ -1,14 +1,12 @@
 #message_display helper
 import pygame
-from public_UI import Position
-# TODO: Fix circular import so this doesn't have to be defined twice
-
+from public_UI import Position, BLACK
 
 def text_objects(text, font, color):
     textSurface = font.render(text, True, color)
     return textSurface, textSurface.get_rect()
 
-def message_display(text, surface, position=Position(0,0), color=(0,0,0)):
+def message_display(text, surface, position=Position(0,0), color=BLACK):
     largeText = pygame.font.Font('freesansbold.ttf',20)
     TextSurf, TextRect = text_objects(text, largeText, color)
     # I don't really want to manipulate the center property, but couldn't figure out how to access x and y directly
@@ -31,7 +29,7 @@ def message_display(text, surface, position=Position(0,0), color=(0,0,0)):
     surface.blit(TextSurf, TextRect)
     return TextRect
 
-def Button(text, coords, surface, border_color=(0,0,0), text_color=(0,0,0), fill_color=None, padding=20, border=True):
+def Button(text, coords, surface, border_color=BLACK, text_color=BLACK, fill_color=None, padding=20, border=True):
     """color will be the color of the button's border/outer rectangle"""
     if fill_color == None:
         fill_color = surface.fill_color

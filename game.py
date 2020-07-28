@@ -3,25 +3,14 @@ import sys
 from board import Board
 from automata import Blinker
 import messages
-from public_UI import Size, Position
+from public_UI import *
 
 
 pygame.init()
 
-WINDOW_HEIGHT = 1000
-WINDOW_WIDTH = 1650
-SCREEN = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-CLOCK = pygame.time.Clock()
-FPS = 5
-BLACK = (0, 0, 0)
-WHITE = (245, 245, 245)
-RED = (255, 0, 0)
-CYAN = (0,186,186)
-
-board = Board(0, WINDOW_WIDTH, WINDOW_HEIGHT, 50)
+board = Board(0, WINDOW_WIDTH, WINDOW_HEIGHT, 7)
 cell_size = board.cell_size()
 board_size = board.size()
-x = cell_size.width//2
 line = Blinker()
 pause = False
 def paused():
@@ -54,7 +43,7 @@ def handle_events():
             if event.key == pygame.K_p:
                 pause = True
                 paused()
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        if event.type == pygame.MOUSEBUTTONDOWN and pause == True:
                 if event.button == 1:
                     mouse_pos = pygame.mouse.get_pos()
                     board.get_cell_num_for_pos(0, Position(mouse_pos[0], mouse_pos[1]))._draw_circle()
@@ -64,15 +53,18 @@ while True:
     # TODO: use dt to control movement speed of objects?
     dt = CLOCK.tick(FPS)
     SCREEN.fill(WHITE)
-    board.draw_grid(0)
+    board.draw_grid(board.active_grid)
+    
     #capture events (mouse clicks, closing the game, etc)
-    handle_events()
-    #animation x value wrap around
-    if x >= board_size.width:
-        x = cell_size.width//2
-    else:
-        x += cell_size.width
-    # double buffers by default
+    handle_events()    
     pygame.display.flip()
 
-    
+
+# MARK: Reference (unused)
+
+#animation x value wrap around - x is an iterator
+    # x = cell_size.width//2
+    # if x >= board_size.width:
+    #     x = cell_size.width//2
+    # else:
+    #     x += cell_size.width

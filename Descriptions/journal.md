@@ -25,3 +25,5 @@ TIL:
     * drawing grid squares by bltting a surface then drawing a rect on it so circles can be drawn on top of the blitted surface
     * fixed grid cell coordinate system
     * fixed method to draw circle (it was always drawing at 0,0)
+    * moved things around to be more organized in an OOP fashion.
+    * made public_UI file to avoid circular references

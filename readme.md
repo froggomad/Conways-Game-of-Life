@@ -10,9 +10,9 @@
 Several interesting variations can take place, some making large stable structures, some that slowly decay, some that continuously transform. All of this based on simple rules that each cell must obey
 
 
-#### Geek Stuff
+### Geek Stuff
 
-###### Draw circle method (and accessing grid squares)
+#### Draw circle method (and accessing grid squares)
 
 * each grid square has a method to draw a circle in it
 * square can be accessed directly (`grids[0][0]`) to get the first square, then it's arranged by column, so `grids[0][1]` would be the square under the first one
