@@ -6,7 +6,7 @@ from public_UI import *
 
 pygame.init()
 
-board = Board(0, WINDOW_WIDTH, WINDOW_HEIGHT, None, 100)
+board = Board(0, WINDOW_WIDTH, WINDOW_HEIGHT, None, 50)
 pause = False
 def paused():
     global pause
@@ -47,16 +47,15 @@ def handle_events():
                 board.get_cell_num_for_pos(0, Position(mouse_pos[0], mouse_pos[1]))[0]._draw_circle()
 
 # MARK: Testing
-# board.grids[0][1250]._draw_circle()
+board.grids[0][(board._num_cells*board._num_cells)//2-1]._draw_circle()
 board.grids[0][(board._num_cells*board._num_cells)//2]._draw_circle()
 board.grids[0][(board._num_cells*board._num_cells)//2+1]._draw_circle()
-board.grids[0][(board._num_cells*board._num_cells)//2+2]._draw_circle()
-
+SCREEN.fill(WHITE)
 while True:
     print(f"######MAIN LOOP#######")
     # TODO: use dt to control movement speed of objects?
     dt = CLOCK.tick(FPS)
-    SCREEN.fill(WHITE)
+    #SCREEN.fill(WHITE)
     board.increase_generation()
     board.draw_grid(board.active_grid)
     #capture events (mouse clicks, closing the game, etc)
