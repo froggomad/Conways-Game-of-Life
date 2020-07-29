@@ -6,11 +6,16 @@ class Size:
         self.width = width
         self.height = height
 
+    def __str__(self):
+        return(f"width: {self.width}, height: {self.height}")
+
 class Position:
     """creates an object with an x and y coordinate rather than using a tuple"""
     def __init__(self, x, y):
         self.x = x
         self.y = y
+    def __str__(self):
+        return (f"x: {self.x}, y: {self.y}")
 
 # MARK: Colors
 BLACK = (0, 0, 0)

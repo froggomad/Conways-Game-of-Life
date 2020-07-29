@@ -14,35 +14,22 @@ class GridCell:
         self.width = width
         self.height = height
         # State
-        self.drawn = False
         self.__alive = False       
         self.__color = BLUE
         self.neighbors = 0
         #create a clear surface to draw on
         self.surface = pygame.Surface((width, height), pygame.SRCALPHA)
+
+    def __str__(self):
+        return (f"x: {self.x}, y: {self.y}, width: {self.width}, color: {self.color}, alive: {self.alive}")
         
     def _draw_circle(self):
-        self.drawn = True
         self.__alive = True
-        center_y = self.height//2
-        center_x = self.width//2
-
-        if self.width > self.height:
-            radius = self.height//2
-        else:
-            radius = self.width//2
-
-        return pygame.draw.circle(self.surface, self.__color, (center_x, center_y), radius)
-
+        return pygame.draw.ellipse(self.surface, self.__color, self.surface.get_rect())
+        
     def _clear_circle(self):
-        self.drawn = False
-        center_y = self.height//2
-        center_x = self.width//2
-        if self.width > self.height:
-            radius = self.height//2
-        else:
-            radius = self.width//2
-        pygame.draw.circle(self.surface, WHITE, (center_x, center_y), radius)
+        self.__alive = False
+        return pygame.draw.ellipse(self.surface, WHITE, self.surface.get_rect())
         
     def draw(self):        
         #from game import SCREEN, BLACK
@@ -60,20 +47,19 @@ class GridCell:
         return self.__color
     
     def kill(self):
-        """set _alive to False, change color, redraw"""
+        """mark to be cleared on next generation"""
         if self.__alive:
             self.__color = RED
             self.__alive = False
-            self._draw_circle()
     
     def revive(self):
-        """set _alive to True"""
+        # TODO: Special Effects
+        """mark to be drawn on next generation"""
         self.__color = BLUE
-        self.__alive = True        
+        self.__alive = True
     
     def change_color(self, color):
-        # TODO: Change XYZ to something more appropriate
-        """Use an RGB value"""
+        """Use an RGB or pre-defined color value"""
         self.__color = color
 
 class Automata:

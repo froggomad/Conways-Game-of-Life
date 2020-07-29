@@ -1,17 +1,14 @@
 import pygame
 import random
 import messages
-from public_UI import Position, WHITE, BLACK
+from public_UI import Position, Size, WHITE, BLACK, SCREEN
 from automata import GridCell
 
-class Size:
-    def __init__(self, width, height):
-        self.width = width
-        self.height = height
-
 class Board:
-    """A square grid of `num_cells` size"""
-    def __init__(self, generation, window_width, window_height, num_cells=25):        
+    """A square grid of `num_cells` size
+       ;param board_style: 0: empty, 1: full, None or no choice: Random
+    """
+    def __init__(self, generation, window_width, window_height, board_style=0, num_cells=25):        
         self._generation = generation
         self._is_user_interaction_enabled = True
         self._num_cells = num_cells
@@ -19,20 +16,30 @@ class Board:
         self.__size = Size(window_width, window_height-self.status_bar_height)
         self.active_grid = 0
         self.__init_grids__()
+        #TODO: always random - allow user to pick
+        self.set_active_grid(board_style)
         self.draw_grid(self.active_grid)
+
+    def __str__(self):
+        return(f"board#: {self.active_grid}, width: {self.size().width}, height: {self.size().height}, with number of cells(sq): {self._num_cells}")
 
     def inactive_grid(self):
         # since the board is either 1 or 0, active_grid+1%2 will always return the inverse
         return (self.active_grid +1) %2
 
     def get_cell_num_for_pos(self, grid_num, position=Position(0,0)):
-        row = position.x//self.cell_size().width
-        column = position.y//self.cell_size().height
-        cell = self.grids[grid_num][(self._num_cells*row)+column]
-        if cell.drawn == True:
-            print(f"row: {row}, column: {column}, index: {(self._num_cells*row)+column}")
-        # TODO: change grid to be dynamic
-        return (cell, (self._num_cells*row)+column)
+        column = position.x//self.cell_size().width
+        row = position.y//self.cell_size().height
+        cell_index = (self._num_cells*column)+row
+        try: 
+            cell = self.grids[grid_num][cell_index]
+            if cell.is_alive():
+                print(f"row: {row}, column: {column}, index: {cell_index}")
+        except IndexError:
+            cell = None
+            print(f"couldn't get cell num for {position}")        
+        
+        return (cell, cell_index)
     
     def size(self):
         return self.__size
@@ -47,11 +54,27 @@ class Board:
         # MARK: TESTING
         cell_index = self.get_cell_num_for_pos(self.active_grid, Position(cell.x, cell.y))[1]
         neighbor_list = []
+
+        north = Position(cell.x, cell.y - self.cell_size().height)
+        south = Position(cell.x, cell.y + self.cell_size().height)
+        
+        east = Position(cell.x + self.cell_size().width, cell.y)
+        west = Position(cell.x - self.cell_size().width, cell.y)
+
+        north_neighbor = self.get_cell_num_for_pos(self.active_grid, north)[0]
+        south_neighbor = self.get_cell_num_for_pos(self.active_grid, south)[0]
+        east_neighbor = self.get_cell_num_for_pos(self.active_grid, east)[0]
+        if cell.is_alive():
+            print(f"east neighbor index: {self.get_cell_num_for_pos(self.active_grid, east)[1]}")
+        west_neighbor = self.get_cell_num_for_pos(self.active_grid, west)[0]
+        if cell.is_alive():
+            print(f"west neighbor index: {self.get_cell_num_for_pos(self.active_grid, west)[1]}")
+
         try:
-            north_neighbor = self.grids[self.active_grid][cell_index-1]
-            south_neighbor = self.grids[self.active_grid][cell_index+1]
-            east_neighbor = self.grids[self.active_grid][cell_index+self._num_cells]
-            west_neighbor = self.grids[self.active_grid][cell_index-self._num_cells]
+            # north_neighbor = self.grids[self.active_grid][cell_index-1]
+            # south_neighbor = self.grids[self.active_grid][cell_index+1]
+            # east_neighbor = self.grids[self.active_grid][cell_index+self._num_cells]
+            # west_neighbor = self.grids[self.active_grid][cell_index-self._num_cells]
             north_east_neighbor = self.grids[self.active_grid][cell_index+self._num_cells-1]
             north_west_neighbor = self.grids[self.active_grid][cell_index-self._num_cells-1]
             south_east_neighbor = self.grids[self.active_grid][cell_index+self._num_cells+1]
@@ -64,43 +87,32 @@ class Board:
             
             neighbor_list.append(north_east_neighbor)
             neighbor_list.append(north_west_neighbor)
-
             neighbor_list.append(south_east_neighbor)
             neighbor_list.append(south_west_neighbor)
+
         except IndexError:
-            print("invalid neighbor")
+            if cell.is_alive():
+                print("invalid neighbor")
             
-        self.neighbors = 0
+        cell.neighbors = 0
         for neighbor in neighbor_list:
-            if neighbor.is_alive() and neighbor.drawn:
-                self.neighbors += 1
+            if neighbor.is_alive():
+                cell.neighbors += 1
 
-        if cell.is_alive() == False and cell.drawn == True and cell.neighbors == 3:
-            cell.resurrect()
-
-        elif cell.neighbors == 2 or cell.neighbors == 3:
-            cell._draw_circle()
-
-        elif cell.neighbors < 2:
-            if cell.drawn == True:
-                print("underpopulated")
+        if cell.is_alive():
+            if cell.neighbors == 2 or cell.neighbors == 3:
+                cell.revive()           
+            else:  # alive with 0, 1, or 4+ neighbors
                 cell.kill()
-        
-        elif cell.neighbors > 3:
-            if cell.drawn == True:
-                print("overpopulated")
-                cell.kill()
-
-        #if cell.alive == False and cell.neighbors ==3:
-            #cell.resurrect()
-        #if cell.neighbors in range(2,4) and cell.alive == True: #cell has 2 or 3 neighbors
-            #Do Nothing
-        #if cell.neighbors < 2 or cell.neighbors >3: 
-            #cell.kill()
+        #cell is dead
+        else:
+            if cell.neighbors == 3:
+                cell.revive()
         
         return cell
 
     def increase_generation(self):
+        """update the game state to reflect the rules of life"""
         # TODO: animate position based on this value?
         self._generation += 1
         for index in range(self._num_cells*self._num_cells):
@@ -108,7 +120,7 @@ class Board:
 
             next_generation = self.check_cell_neighbors(cell)
 
-            self.grids[self.inactive_grid()][index] = next_generation        
+            self.grids[self.inactive_grid()][index] = next_generation
         self.active_grid = self.inactive_grid()
 
     def is_interactable(self):
@@ -127,43 +139,43 @@ class Board:
                 rect = GridCell(x*self.cell_size().width, y*self.cell_size().height, self.cell_size().width, self.cell_size().height)
                 rect = GridCell(x*self.cell_size().width, y*self.cell_size().height, self.cell_size().width, self.cell_size().height)
                 self.grids[0][(self._num_cells*x)+y] = rect
-                self.grids[1][(self._num_cells*x)+y] = rect
+                #self.grids[1][(self._num_cells*x)+y] = rect
                 
         
-    
-    def draw_grid(self, grid_num, choice=None):
+    def set_active_grid(self, choice=None):
         """Create the grid using the current size and generation
             set_grid(0, 0) grids[0] - all dead
             set_grid(1, 1) grids[1] - all alive
             set_grid(0) grids[0] - random
-            set_grid(1) grids[None] - random 
-        """        
-        self.increase_generation()
-        # TODO: Improve performance (do we need a nested for loop?)
-        # TODO: Draw generation label
-        from game import SCREEN
-        self._is_user_interaction_enabled = False
-        #makes grids of cell_size() (pixels) such that it fits the window size
-        # MARK: None/Random choice
-        if choice == None:
-            for grid in self.grids[grid_num]:
+            set_grid(1, None) grids[1] - random 
+        """ 
+        for grid in self.grids[self.active_grid]:
                 grid.draw()
-                # draw = random.choice([0,1])
-                # if draw == 1:
-                #     grid._draw_circle()
-                # else:
-                #     grid._clear _circle()
-                #self.check_cell_neighbors(grid)
-        self.grids[self.active_grid][7]
+
+        if choice == None:
+            for grid in self.grids[self.active_grid]:
+                draw = random.choice([0,1])
+                if draw == 1:
+                    grid._draw_circle()
+        elif choice == 1:
+            for grid in self.grids[self.active_grid]:
+                grid._draw_circle()
+        else:
+            for grid in self.grids[self.active_grid]:
+                grid._clear_circle()          
+
+
+    def draw_grid(self, grid_num):                
+        self._is_user_interaction_enabled = False
+        
+        for grid in self.grids[grid_num]:
+            grid.draw()
+            if grid.is_alive():
+                grid._draw_circle()
+            else: 
+                grid._clear_circle()
+                
         self.draw_status_bar(SCREEN)
-
-        # MARK: Direct Draw
-        #self.grids[0][0]._draw_circle(self.grids[0][0].surface)
-        #self.grids[0][24]._draw_circle(self.grids[0][1].surface)
-
-        # MARK: Coordinate Draw (preferred)
-        #self.get_cell_num_for_pos(0, (Position(self.size().width//2, self.size().height//2)))[0]._draw_circle()
-        #self.get_cell_num_for_pos(0, (Position(0, 0)))._draw_circle()
 
     def draw_status_bar(self, screen):
         """draw user options (window size, num cells, etc)"""
@@ -172,8 +184,6 @@ class Board:
         from messages import Button
         
         pygame.display.set_caption(f"Conway's Game of Life")
-        #TODO: Move to lower right corner, just under grid
-        #rect = pygame.Rect(0, self._size.height, self._size.width, 80)
         status_bar = pygame.Surface((self.__size.width, self.status_bar_height))        
         status_bar.fill(WHITE)
         
