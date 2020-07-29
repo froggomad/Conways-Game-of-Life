@@ -1,5 +1,6 @@
 import pygame
 from public_UI import WHITE, BLACK, SCREEN
+from messages import *
 
 BLUE = (0,0,204)
 RED = (255,51,51)
@@ -25,18 +26,19 @@ class GridCell:
         
     def _draw_circle(self):
         self.__alive = True
-        return pygame.draw.ellipse(self.surface, self.__color, self.surface.get_rect())
+        #message_display(f"{self.neighbors}", self.surface)
+        pygame.draw.ellipse(self.surface, self.__color, self.surface.get_rect())
         
     def _clear_circle(self):
-        self.__alive = False
-        return pygame.draw.ellipse(self.surface, WHITE, self.surface.get_rect())
+        self.__alive = False        
+        pygame.draw.ellipse(self.surface, WHITE, self.surface.get_rect())
         
     def draw(self):        
         #from game import SCREEN, BLACK
         rect = pygame.Rect(0,0,
                            self.width, self.height)
         SCREEN.blit(self.surface, (self.x, self.y))
-        return pygame.draw.rect(self.surface, BLACK, rect, 1)
+        #pygame.draw.rect(self.surface, BLACK, rect, 1)
 
     def is_alive(self):
         """returns True if alive, False if dead"""

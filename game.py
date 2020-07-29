@@ -6,9 +6,7 @@ from public_UI import *
 
 pygame.init()
 
-board = Board(0, WINDOW_WIDTH, WINDOW_HEIGHT, 0, 25)
-cell_size = board.cell_size()
-board_size = board.size()
+board = Board(0, WINDOW_WIDTH, WINDOW_HEIGHT, None, 100)
 pause = False
 def paused():
     global pause
@@ -20,17 +18,18 @@ def paused():
                 pygame.quit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_p:
-                    board._is_user_interaction_enabled = False
+                    board._is_user_interaction_enabled = True
                     unpause()
+        board_size = board.size()
         pause_line_1 = messages.message_display("Paused".upper(), SCREEN, Position(board_size.width//2, board_size.height//2), RED)
         #line 2
         messages.message_display("(press 'p' to continue)", SCREEN, Position(board_size.width//2, board_size.height//2 + pause_line_1.height), CYAN)
         pygame.display.update()
-        #CLOCK.tick(15)
 
 def unpause():
     global pause
     pause = False
+    board._is_user_interaction_enabled = False
 
 def handle_events():
     global pause
@@ -42,7 +41,7 @@ def handle_events():
             if event.key == pygame.K_p:
                 pause = True
                 paused()
-        if event.type == pygame.MOUSEBUTTONDOWN and pause == True:            
+        if event.type == pygame.MOUSEBUTTONDOWN and pause == True and board._is_user_interaction_enabled == True:            
             if event.button == 0:
                 mouse_pos = pygame.mouse.get_pos()
                 board.get_cell_num_for_pos(0, Position(mouse_pos[0], mouse_pos[1]))[0]._draw_circle()
