@@ -35,10 +35,11 @@ When a cell reaches a certain age, it dies and a new cell is immediately born in
     * note**: coordinate lookup is preferred not for speed (since it's a moot point) but for scalability - if the user changes the number of cells, we want their current cells to appear in the same coordinate space
 
 ###### MARK: Reference (unused)
-
-#animation x value wrap around - x is an iterator
-    # x = cell_size.width//2
-    # if x >= board_size.width:
-    #     x = cell_size.width//2
-    # else:
-    #     x += cell_size.width
+```
+animation x value wrap around - x is an iterator
+     x = cell_size.width//2
+     if x >= board_size.width:
+         x = cell_size.width//2
+     else:
+         x += cell_size.width
+ ```
