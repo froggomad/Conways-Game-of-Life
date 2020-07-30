@@ -1,7 +1,8 @@
 import pygame
 import random
 import messages
-from public_UI import Position, Size, WHITE, BLACK, SCREEN
+from messages import Button
+from public_UI import Position, Size, WHITE, BLACK, RED, BLUE, GREEN, CYAN, DEAD_COLOR, SCREEN, pause
 from automata import GridCell
 from copy import copy
 
@@ -9,18 +10,22 @@ class Board:
     """A square grid of `num_cells` size
        ;param board_style: 0: empty, 1: full, None or no choice: Random
     """
-    def __init__(self, generation, window_width, window_height, board_style=0, num_cells=25):        
+    def __init__(self, generation, window_width, window_height, board_style=0, num_cells=50):        
         self._generation = generation
-        self._is_user_interaction_enabled = True
+        self._is_user_interaction_enabled = False
         self._num_cells = num_cells
         self.status_bar_height = 80
         self.__size = Size(window_width, window_height-self.status_bar_height)
+        self.surface = pygame.Surface((self.size().width, self.size().height))
         self.active_grid = 0
         self.__init_grids__()
-        #TODO: always random - allow user to pick
         self.set_active_grid(board_style)
         self.draw_grid(self.active_grid)
-
+        self.status_bar = pygame.Surface((self.size().width, self.status_bar_height))
+        self.pause_button()
+        self.clear_button()
+        self.randomize_button()
+        
     def __str__(self):
         return(f"board#: {self.active_grid}, width: {self.size().width}, height: {self.size().height}, with number of cells(sq): {self._num_cells}")
 
@@ -76,10 +81,11 @@ class Board:
         neighbor_list = []
         cell.neighbors = 0
 
-        north = Position(cell.x, cell.y - self.cell_size().height)
-        south = Position(cell.x, cell.y + self.cell_size().height)
-        east = Position(cell.x + self.cell_size().width, cell.y)
-        west = Position(cell.x - self.cell_size().width, cell.y)
+        padding = self._num_cells//100
+        north = Position(cell.x, cell.y - padding - self.cell_size().height)
+        south = Position(cell.x, cell.y + padding + self.cell_size().height)
+        east = Position(cell.x + padding + self.cell_size().width, cell.y)
+        west = Position(cell.x - padding - self.cell_size().width, cell.y)
 
         north_east = Position(east.x, north.y)
         north_west = Position(west.x, north.y)
@@ -159,9 +165,7 @@ class Board:
                 grid._clear_circle()          
 
 
-    def draw_grid(self, grid_num):                
-        self._is_user_interaction_enabled = False
-        
+    def draw_grid(self, grid_num):        
         for grid in self.grids[grid_num]:
             grid.draw()
             if grid.is_alive():
@@ -179,9 +183,31 @@ class Board:
         
         pygame.display.set_caption(f"Conway's Game of Life")
         status_bar = pygame.Surface((self.__size.width, self.status_bar_height))        
-        status_bar.fill(WHITE)
-        
-        messages.message_display(f"Generation: {self._generation}", status_bar, Position(status_bar.get_rect().width, status_bar.get_rect().height))
-        test_button = Button("test", (0,0), status_bar, (255,0,0), fill_color=(255,0,0), text_color = WHITE)
-        screen.blit(status_bar, (0, self.__size.height))        
+        status_bar.fill(DEAD_COLOR)
+        self.status_bar = status_bar
+        self.pause_button()        
+        self.clear_button()
+        self.randomize_button()
+        messages.message_display(f"Generation: {self._generation}", status_bar, Position(status_bar.get_rect().width, status_bar.get_rect().height), WHITE)
+        SCREEN.blit(self.status_bar, (0, self.size().height))
         #TODO: Create options allowing user to change window size, number of cells, etc
+
+    def clear(self):
+        for board in self.grids:
+            for grid in board:
+                if grid != None:                
+                    grid._clear_circle()
+                    grid.draw()
+
+
+    def pause_button(self):
+        if pause:
+            self.pauseBtn = Button("Play", (self.status_bar.get_rect().width//2, 0), self.status_bar, border_color=BLACK, fill_color=GREEN, text_color = WHITE)
+        else:            
+            self.pauseBtn = Button("Pause", (self.status_bar.get_rect().width//2, 0), self.status_bar, border_color=BLACK, fill_color=GREEN, text_color = WHITE)
+
+    def clear_button(self):
+        self.clearBtn = Button("Clear Board", (self.pauseBtn.x + self.pauseBtn.width + 8, 0), self.status_bar, border_color=BLACK, fill_color=RED, text_color=WHITE)
+
+    def randomize_button(self):
+        self.randomizeBtn = Button("Randomize", (8, 0), self.status_bar, border_color=BLACK, fill_color=CYAN, text_color=WHITE)

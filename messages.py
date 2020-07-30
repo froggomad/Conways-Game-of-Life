@@ -20,6 +20,7 @@ def message_display(text, surface, position=Position(0,0), color=BLACK):
         text_x = position.x + (TextRect.width//2)
     else:
         text_x = position.x
+    
 
     if position.y > surface.get_rect().height//2:
         text_y = position.y - (TextRect.height//2)
@@ -36,7 +37,9 @@ def message_display(text, surface, position=Position(0,0), color=BLACK):
 
 def Button(text, coords, surface, border_color=None, text_color=BLACK, fill_color=None, padding=20):
     """ Create a Button's UI
-
+        setting a border color draws a 1 px rectangle
+        text color can be changed with an RGB value
+        :returns: the buttons main rectangle (Rect)
     """
     if fill_color == None:
         fill_color = surface.fill_color
@@ -54,4 +57,3 @@ def Button(text, coords, surface, border_color=None, text_color=BLACK, fill_colo
     pygame.draw.rect(surface, fill_color, rect)
     surface.blit(text_surface, (coords[0] + padding//2, coords[1]))
     return (rect)
-

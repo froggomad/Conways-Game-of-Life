@@ -35,3 +35,19 @@ TIL:
 * Debug neighbors
 * Buttons
 * App is close to a minimally working state, and close to MVP (need to figure out cell neighbors and implement buttons)
+
+## Day 6 (Thursday):
+================================
+### MVP
+================================
+* clear button -- done
+* rules/help with button
+* step thru generation
+* speed change
+================================
+### Stretches
+================================
+* age
+* grid on/off
+* pre-drawn patterns
+* color party
