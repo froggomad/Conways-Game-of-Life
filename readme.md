@@ -34,7 +34,7 @@ When a cell reaches a certain age, it dies and a new cell is immediately born in
     * note: lookup is using math and subscripting to find the square rather than searching the array for a square between those coordinates
     * note**: coordinate lookup is preferred not for speed (since it's a moot point) but for scalability - if the user changes the number of cells, we want their current cells to appear in the same coordinate space
 
-###### MARK: Reference (unused)
+###### Reference/Unused
 ```
 animation x value wrap around - x is an iterator
      x = cell_size.width//2
