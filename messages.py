@@ -55,5 +55,5 @@ def Button(text, coords, surface, border_color=None, text_color=BLACK, fill_colo
         pygame.draw.rect(surface, border_color, rect, 1)
     
     pygame.draw.rect(surface, fill_color, rect)
-    surface.blit(text_surface, (coords[0] + padding//2, coords[1]))
+    surface.blit(text_surface, (coords[0] + padding//2, coords[1] + (text_rect.height//3)))
     return (rect)
