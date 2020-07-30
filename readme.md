@@ -15,10 +15,10 @@ Several interesting variations can take place, some making large stable structur
 
 As cells age, their color changes subtly. However, at various life stages, their color changes drastically. This is meant to mimic human life and it's various stages.
 
-Youth: green
-Prime: red
-Middle Age: deep blue
-Old Age: bright blue
+* Youth: green
+* Prime: red
+* Middle Age: deep blue
+* Old Age: bright blue
 
 When a cell reaches a certain age, it dies and a new cell is immediately born in its place, continuing the circle of life.
 

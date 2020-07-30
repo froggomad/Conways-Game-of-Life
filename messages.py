@@ -48,7 +48,7 @@ def Button(text, coords, surface, border_color=None, text_color=BLACK, fill_colo
     text_objs = text_objects(text, largeText, text_color)
     text_surface = text_objs[0]
     text_rect = text_objs[1]
-    rect = pygame.Rect(coords, (text_rect.width + int(padding), text_rect.height))
+    rect = pygame.Rect(coords, (text_rect.width + int(padding), text_rect.height*1.5))
 
     #draw border
     if border_color != None:

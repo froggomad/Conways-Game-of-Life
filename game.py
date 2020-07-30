@@ -55,13 +55,15 @@ def toggle_pause():
 
 def clear_board():
     board.clear()
-    display_pause_message()
+    if pause:
+        display_pause_message()
 
 def randomize_board():
     global board
     board.clear()
     board = Board(0, WINDOW_WIDTH, WINDOW_HEIGHT, board_style=None)
-    display_pause_message()
+    if pause:
+        display_pause_message()
     board._is_user_interaction_enabled = pause
 
 def handle_events():
