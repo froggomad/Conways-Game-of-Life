@@ -16,15 +16,15 @@ def run():
     while True:
         # TODO: use dt to control movement speed of objects? (if implementing particles)
         if pause:
-            if i == 0:                
+            if i == 0:                                
                 i+=1
-                paused()
-        dt = CLOCK.tick(FPS)
-        SCREEN.fill(FILL_COLOR)
+                paused()        
         board.increase_generation()
+        SCREEN.fill(FILL_COLOR)        
         board.draw_grid(board.active_grid)
         handle_events()                 
         pygame.display.flip()
+        CLOCK.tick(FPS)
 
 def display_pause_message():
     board_size = board.size()
@@ -38,12 +38,14 @@ def unpause():
 
 def paused():
     global pause
-    pause = True  
+    pause = True      
     board._is_user_interaction_enabled = True
     display_pause_message()        
     while pause == True:
+        board.draw_rects(board.active_grid)
         handle_events()
         pygame.display.update()
+    board.clear_rects(board.active_grid)
 
 def toggle_pause():
     if pause == True:
@@ -60,11 +62,10 @@ def randomize_board():
     board.clear()
     board = Board(0, WINDOW_WIDTH, WINDOW_HEIGHT, board_style=None)
     display_pause_message()
-    board._is_user_interaction_enabled = True
+    board._is_user_interaction_enabled = pause
 
 def handle_events():
     #global pause
-    # TODO: Don't want to blit these again, make a method to return their rects without putting them in memory again
     pause_button = board.pauseBtn
     clear_button = board.clearBtn
     random_button = board.randomizeBtn

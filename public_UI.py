@@ -20,6 +20,7 @@ class Position:
 # MARK: Colors
 BLACK = (0, 0, 0)
 WHITE = (245, 245, 245)
+GRAY = (105,105,105)
 RED = (255, 0, 0)
 CYAN = (0,186,186)
 BLUE = (0,0,204)

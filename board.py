@@ -2,7 +2,7 @@ import pygame
 import random
 import messages
 from messages import Button
-from public_UI import Position, Size, WHITE, BLACK, RED, BLUE, GREEN, CYAN, DEAD_COLOR, SCREEN, pause
+from public_UI import Position, Size, WHITE, BLACK, RED, BLUE, GREEN, CYAN, GRAY, DEAD_COLOR, SCREEN, pause
 from automata import GridCell
 from copy import copy
 
@@ -30,7 +30,7 @@ class Board:
         return(f"board#: {self.active_grid}, width: {self.size().width}, height: {self.size().height}, with number of cells(sq): {self._num_cells}")
 
     def __init_grids__(self):
-        """init grids[0] (active) and grids[1] (inactive)"""
+        """init grids[0] (active) and grids[1] (inactive)"""        
         # initialize array in memory
         self.grids = [
             [None for x in range(self._num_cells*self._num_cells)],
@@ -42,7 +42,7 @@ class Board:
                 rect = GridCell(x*self.cell_size().width, y*self.cell_size().height, self.cell_size().width, self.cell_size().height)
                 rect = GridCell(x*self.cell_size().width, y*self.cell_size().height, self.cell_size().width, self.cell_size().height)
                 self.grids[0][(self._num_cells*x)+y] = rect
-                #self.grids[1][(self._num_cells*x)+y] = rect
+                #self.grids[1][(self._num_cells*x)+y] = rect        
 
     def size(self):
         return self.__size
@@ -74,7 +74,7 @@ class Board:
         return (cell, cell_index)
 
     def check_cell_neighbors(self, cell):
-        """get count of a cell's alive neighbors"""
+        """get count of a cell's alive neighbors"""        
 
         cell_index = self.get_cell_for_pos(self.active_grid, Position(cell.x, cell.y))[1]
         
@@ -130,8 +130,7 @@ class Board:
                 self.grids[self.inactive_grid()][cell_index].revive()
 
     def increase_generation(self):
-        """update the game state to reflect the rules of life"""
-        # TODO: animate position based on this value?
+        """update the game state to reflect the rules of life"""        
         self._generation += 1
         for index in range(self._num_cells*self._num_cells):
             cell = self.grids[self.active_grid][index]
@@ -167,12 +166,11 @@ class Board:
 
     def draw_grid(self, grid_num):        
         for grid in self.grids[grid_num]:
-            grid.draw()
+            grid.draw()            
             if grid.is_alive():
                 grid._draw_circle()
             else: 
-                grid._clear_circle()
-                
+                grid._clear_circle()                         
         self.draw_status_bar(SCREEN)
 
     def draw_status_bar(self, screen):
@@ -211,3 +209,11 @@ class Board:
 
     def randomize_button(self):
         self.randomizeBtn = Button("Randomize", (8, 0), self.status_bar, border_color=BLACK, fill_color=CYAN, text_color=WHITE)
+
+    def draw_rects(self, grid_num):
+        for grid in self.grids[grid_num]:
+             pygame.draw.rect(grid.surface, GRAY, grid.surface.get_rect(), 1)
+
+    def clear_rects(self, grid_num):
+        for grid in self.grids[grid_num]:
+            pygame.draw.rect(grid.surface, DEAD_COLOR, grid.surface.get_rect(), 1)

@@ -63,7 +63,7 @@ class GridCell:
         current = self.get_age()/self.max_age
         youth = 0.25*self.max_age
         if self.get_age() <= youth:            
-            return (0,255*current+50,0)
+            return (0,255*current+100,0)
         #youth-midlife
         elif self.get_age() <= int(0.5*self.max_age):
             return (255*current,0,0)
