@@ -6,8 +6,8 @@ from public_UI import *
 import webbrowser
 
 pygame.init()
-
-board = Board(0, WINDOW_WIDTH, WINDOW_HEIGHT, 1, 50)
+cell_count = 50
+board = Board(0, WINDOW_WIDTH, WINDOW_HEIGHT, 1, cell_count)
 
 # MARK: Run Loop
 i=0
@@ -26,6 +26,7 @@ def run():
         pygame.display.flip()
         CLOCK.tick(FPS)
 
+# MARK: View Lifecycle
 def display_pause_message():
     board_size = board.size()
     pause_line_1 = message_display("Paused".upper(), SCREEN, Position(board_size.width//2, board_size.height//2), WHITE)
@@ -61,7 +62,7 @@ def clear_board():
 def randomize_board():
     global board
     board.clear()
-    board = Board(0, WINDOW_WIDTH, WINDOW_HEIGHT, board_style=None)
+    board = Board(0, WINDOW_WIDTH, WINDOW_HEIGHT, board_style=None, num_cells=cell_count)
     if pause:
         display_pause_message()
     board._is_user_interaction_enabled = pause
@@ -107,5 +108,7 @@ def handle_events():
                         cell._draw_circle()
                         cell.draw()
             CLOCK.tick(7)
-            pygame.display.update()            
+            pygame.display.update()
+
+# MARK: Run the game!
 run()
