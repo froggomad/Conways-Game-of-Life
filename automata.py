@@ -1,10 +1,11 @@
 import pygame
 from public_UI import WHITE, BLACK, SCREEN, FILL_COLOR, DEAD_COLOR, ALIVE_COLOR
 from messages import *
-
+# this is different from public_UI RED, but currently unused
 RED = (255,51,51)
 
 class GridCell:
+    # MARK: Init
     def __init__(self, x,  y, width, height):        
         super().__init__()
         # Position
@@ -16,31 +17,18 @@ class GridCell:
         # State
         self.__alive = False
         self.__age = 1
-        self.max_age = 101
+        self.max_age = 1001
         self.__color = self.age_color()
         self.neighbors = 0
         #create a clear surface to draw on
-        self.surface = pygame.Surface((width, height), pygame.SRCALPHA)
-        
-        
-    
-    def get_age(self):
-        return self.__age
+        self.surface = pygame.Surface((width, height), pygame.SRCALPHA)  
 
     def __str__(self):
         return (f"x: {self.x}, y: {self.y}, width: {self.width}, color: {self.color}, alive: {self.alive}")
-        
-    def _draw_circle(self):
-        self.__alive = True
-        #message_display(f"{self.neighbors}", self.surface)
-        pygame.draw.ellipse(self.surface, self.__color, self.surface.get_rect())
-        
-    def _clear_circle(self):
-        self.__alive = False        
-        pygame.draw.ellipse(self.surface, DEAD_COLOR, self.surface.get_rect())
-        
-    def draw(self):
-        SCREEN.blit(self.surface, (self.x, self.y))
+
+    # MARK: Getters
+    def get_age(self):
+        return self.__age
 
     def is_alive(self):
         """returns True if alive, False if dead"""
@@ -49,18 +37,15 @@ class GridCell:
     def get_color(self):
         """get the current color"""
         return self.age_color()
-    
-    def kill(self):
-        """mark to be cleared on next generation"""
-        if self.__alive:
-            self.__alive = False
 
+    # Returns the cell's color based on age
     def age_color(self):
         #rgb value percentage based on age        
         #0-youth
         if self.get_age() >= self.max_age:
             self.__age = 1
         current = self.get_age()/self.max_age
+
         youth = 0.25*self.max_age
         if self.get_age() <= youth:            
             return (0,255*current+100,0)
@@ -79,6 +64,24 @@ class GridCell:
             if sure > max:
                 sure = max
             return (0,current*255,sure)
+
+    # MARK: View Lifecycle
+    def _draw_circle(self):
+        self.__alive = True
+        #message_display(f"{self.neighbors}", self.surface)
+        pygame.draw.ellipse(self.surface, self.__color, self.surface.get_rect())
+        
+    def _clear_circle(self):
+        self.__alive = False        
+        pygame.draw.ellipse(self.surface, DEAD_COLOR, self.surface.get_rect())
+        
+    def draw(self):
+        SCREEN.blit(self.surface, (self.x, self.y))
+    
+    def kill(self):
+        """mark to be cleared on next generation"""
+        if self.__alive:
+            self.__alive = False
     
     def revive(self):
         # TODO: Special Effects
@@ -90,7 +93,7 @@ class GridCell:
     def change_color(self, color):
         """Use an RGB or pre-defined color value"""
         self.__color = color
-
+# Currently unused - idea is to use for preset such as gliders
 class Automata:
     #set initial state to alive
     def __init__(self, num, name):
@@ -106,3 +109,16 @@ class Blinker(Automata):
         for cell in self.cells:
             cell._draw_circle()
             
+class GliderGenerator(Automata):
+    pass
+    #draw 5 rows of cells, centered
+
+        #draw 4 cells
+        
+        #draw 8 cells
+
+        #draw 12 cells
+
+        #draw 8 cells
+
+        #draw 4 cells
