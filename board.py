@@ -10,6 +10,7 @@ class Board:
     """A square grid of `num_cells` size
        ;param board_style: 0: empty, 1: full, None or no choice: Random
     """
+    # MARK: Init
     def __init__(self, generation, window_width, window_height, board_style=0, num_cells=50):        
         self._generation = generation
         self._is_user_interaction_enabled = False
@@ -25,9 +26,6 @@ class Board:
         self.pause_button()
         self.clear_button()
         self.randomize_button()
-        
-    def __str__(self):
-        return(f"board#: {self.active_grid}, width: {self.size().width}, height: {self.size().height}, with number of cells(sq): {self._num_cells}")
 
     def __init_grids__(self):
         """init grids[0] (active) and grids[1] (inactive)"""        
@@ -42,8 +40,13 @@ class Board:
                 rect = GridCell(x*self.cell_size().width, y*self.cell_size().height, self.cell_size().width, self.cell_size().height)
                 rect = GridCell(x*self.cell_size().width, y*self.cell_size().height, self.cell_size().width, self.cell_size().height)
                 self.grids[0][(self._num_cells*x)+y] = rect
-                #self.grids[1][(self._num_cells*x)+y] = rect        
+                #self.grids[1][(self._num_cells*x)+y] = rect 
+        
+    def __str__(self):
+        return(f"board#: {self.active_grid}, width: {self.size().width}, height: {self.size().height}, with number of cells(sq): {self._num_cells}")
 
+           
+    # MARK: Getters
     def size(self):
         return self.__size
 
@@ -58,7 +61,9 @@ class Board:
         return (self.active_grid +1) %2
 
     def get_cell_for_pos(self, grid_num, position=Position(0,0)):
-        """ given a `Position`, returns the cell and cell's index at that position in a tuple
+        """ 
+            Given a `Position`, returns the cell and cell's index at that position in a tuple
+
             :return (cell,index):
         """
         column = position.x//self.cell_size().width
@@ -73,34 +78,35 @@ class Board:
         
         return (cell, cell_index)
 
+    # MARK: Game State
     def check_cell_neighbors(self, cell):
-        """get count of a cell's alive neighbors"""        
-
+        """set a cell's state for the next drawing run"""
         cell_index = self.get_cell_for_pos(self.active_grid, Position(cell.x, cell.y))[1]
-        
+        # Init neighbors
         neighbor_list = []
         cell.neighbors = 0
-
-        padding = self._num_cells//100
+        
+        # Cardinal Directions
         north = Position(cell.x, cell.y - padding - self.cell_size().height)
         south = Position(cell.x, cell.y + padding + self.cell_size().height)
         east = Position(cell.x + padding + self.cell_size().width, cell.y)
         west = Position(cell.x - padding - self.cell_size().width, cell.y)
-
+        # Ordinal Directions
         north_east = Position(east.x, north.y)
         north_west = Position(west.x, north.y)
         south_east = Position(east.x, south.y)
         south_west = Position(west.x, south.y)
-
+        # Cardinal Neighbors
         north_neighbor = self.get_cell_for_pos(self.active_grid, north)[0]        
         south_neighbor = self.get_cell_for_pos(self.active_grid, south)[0]
         east_neighbor = self.get_cell_for_pos(self.active_grid, east)[0]
         west_neighbor = self.get_cell_for_pos(self.active_grid, west)[0]
+        # Ordinal Neighbors
         north_east_neighbor = self.get_cell_for_pos(self.active_grid, north_east)[0]
         north_west_neighbor = self.get_cell_for_pos(self.active_grid, north_west)[0]
         south_east_neighbor = self.get_cell_for_pos(self.active_grid, south_east)[0]
         south_west_neighbor = self.get_cell_for_pos(self.active_grid, south_west)[0]
-
+        # Calculate Neighbors
         neighbor_list.append(north_neighbor)
         neighbor_list.append(south_neighbor)
         neighbor_list.append(east_neighbor)
@@ -115,10 +121,10 @@ class Board:
             if neighbor is not None and neighbor.is_alive():
                 cell.neighbors += 1
 
-        #assign cell to inactive grid (copying the value)
+        #assign cell to inactive grid (copying the value to avoid pass by reference)
         self.grids[self.inactive_grid()][cell_index] = copy(cell)
 
-        #modify on inactive grid
+        #modify cell on inactive grid
         if cell.is_alive():            
             if cell.neighbors == 2 or cell.neighbors == 3:                                
                 self.grids[self.inactive_grid()][cell_index].revive()           
@@ -134,8 +140,8 @@ class Board:
         self._generation += 1
         for index in range(self._num_cells*self._num_cells):
             cell = self.grids[self.active_grid][index]
-
             self.check_cell_neighbors(cell)
+
         self.active_grid = self.inactive_grid()
 
     def is_interactable(self):
@@ -143,9 +149,13 @@ class Board:
         
     def set_active_grid(self, choice=None):
         """Create the grid using the current size and generation
+
             set_grid(0, 0) grids[0] - all dead
+
             set_grid(1, 1) grids[1] - all alive
+
             set_grid(0) grids[0] - random
+
             set_grid(1, None) grids[1] - random 
         """ 
         for grid in self.grids[self.active_grid]:
@@ -161,9 +171,9 @@ class Board:
                 grid._draw_circle()
         else:
             for grid in self.grids[self.active_grid]:
-                grid._clear_circle()          
+                grid._clear_circle()
 
-
+    # draw the grid surface (not the grid's border) and draw a circle on top of it if it's alive
     def draw_grid(self, grid_num):        
         for grid in self.grids[grid_num]:
             grid.draw()            
@@ -174,11 +184,11 @@ class Board:
         self.draw_status_bar(SCREEN)
 
     def draw_status_bar(self, screen):
-        """draw user options (window size, num cells, etc)"""
-        """draw the current generation in the lower right corner"""
-        
-        from messages import Button
-        
+        """
+            draw user options (window size, num cells, etc)
+
+            draw the current generation in the lower right corner
+        """        
         pygame.display.set_caption(f"Conway's Game of Life")
         status_bar = pygame.Surface((self.__size.width, self.status_bar_height))        
         status_bar.fill(DEAD_COLOR)
@@ -190,6 +200,7 @@ class Board:
         SCREEN.blit(self.status_bar, (0, self.size().height))
         #TODO: Create options allowing user to change window size, number of cells, etc
 
+    #clear the circles on the board
     def clear(self):
         for board in self.grids:
             for grid in board:
@@ -197,8 +208,9 @@ class Board:
                     grid._clear_circle()
                     grid.draw()
 
-
+    # MARK: Buttons
     def pause_button(self):
+        #TODO: Debug - state doesn't change (probably related to grid drawing not changing until an action is completed)
         if pause:
             self.pauseBtn = Button("Play", (self.status_bar.get_rect().width//2, 0), self.status_bar, border_color=BLACK, fill_color=GREEN, text_color = WHITE)
         else:            
@@ -209,7 +221,7 @@ class Board:
 
     def randomize_button(self):
         self.randomizeBtn = Button("Randomize", (8, 0), self.status_bar, border_color=BLACK, fill_color=CYAN, text_color=WHITE)
-
+    # MARK: Draw/Clear Grids
     def draw_rects(self, grid_num):
         for grid in self.grids[grid_num]:
              pygame.draw.rect(grid.surface, GRAY, grid.surface.get_rect(), 1)
